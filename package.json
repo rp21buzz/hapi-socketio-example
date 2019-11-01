@@ -1,0 +1,22 @@
+{
+  "name": "hapi-socketio-example",
+  "version": "1.0.0",
+  "description": "DataWorkbench push notifications Proof of Concept prototype",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-app": "nodemon node app.js"
+  },
+  "author": "rakesh.palaparthi",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^18.4.0",
+    "@hapi/hoek": "^8.3.2",
+    "@hapi/vision": "^5.5.4",
+    "handlebars": "^4.5.0",
+    "inert": "^5.1.3",
+    "nconf": "^0.10.0",
+    "nodemon": "^1.19.4",
+    "socket.io": "^2.3.0"
+  }
+}
