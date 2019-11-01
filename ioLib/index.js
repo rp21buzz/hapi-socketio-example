@@ -1,7 +1,7 @@
 'use strict';
 
 const Hoek = require('@hapi/hoek');
-const socketIo = require('socket.io');
+const SocketIo = require('socket.io');
 
 module.exports = {
   name: 'ioLib',
@@ -15,20 +15,20 @@ module.exports = {
         server.log(['ioLib','success'], JSON.stringify(ioOptions));
 
         // instantiate socket.io
-        const io = socketIo(server.listner, ioOptions);
+        const ioServer = new SocketIo(server.listner, ioOptions);
 
         // attach events Listners & Handlers defined in ioLib
         // const ioUtilities = require('./utilities');
         // ioUtilities.attachEvents(server, server.plugins.ioLib.io);
 
-        io.on('connection',function(socket){
-          socket.emit('Oh hii!');
+        ioServer.on('connection',function(socket){
           console.log(['websocket','success'], "client connected");
           console.log(['websocket','success'], socket.stringify());
+          socket.emit('Oh hii!');
         });
 
         // expose the socket io
-        server.expose('io', io);
+        server.expose('ioServer', ioServer);
 
         server.log(['ioLib','success'], "server socket created successfully");
       }catch(err){

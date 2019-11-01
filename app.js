@@ -33,8 +33,8 @@ const init = async () => {
       options: {
         io: {
           path: '/',
-          serveClient: true,
-          transports: ['polling', 'websocket']
+          // serveClient: true,
+          // transports: ['polling', 'websocket']
         }
       }
     },{

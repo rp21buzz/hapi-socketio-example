@@ -1,7 +1,7 @@
 var app = new Vue({
   el: '#home',
   data: {
-    io: null,
+    socket: null,
     lastUpdated: '',
     username: '',
     activeNotifyDiv: 'new',
@@ -32,10 +32,10 @@ var app = new Vue({
     let d = new Date();
     this.lastUpdated = d.toISOString();
     //
-    this.io =  io(window.location.origin, {
+    this.socket =  io(window.location.origin, {
       path: '/'
     });
-    this.io.connect();
+    this.socket.connect();
   },
   computed: {
     getLastUpdated: function(){
