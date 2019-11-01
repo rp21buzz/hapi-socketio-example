@@ -34,7 +34,7 @@ const init = async () => {
         io: {
           path: '/',
           // serveClient: true,
-          // transports: ['polling', 'websocket']
+          transports: ['websocket']
         }
       }
     },{
