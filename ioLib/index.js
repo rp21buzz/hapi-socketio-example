@@ -15,7 +15,7 @@ module.exports = {
         server.log(['ioLib','success'], JSON.stringify(ioOptions));
 
         // instantiate socket.io
-        const ioServer = new SocketIo(server.listner, ioOptions);
+        const ioServer = SocketIo.listen(server.listener, ioOptions);
 
         // attach events Listners & Handlers defined in ioLib
         const ioUtilities = require('./utilities');

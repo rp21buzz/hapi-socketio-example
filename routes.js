@@ -27,8 +27,10 @@ module.exports = [
   },{
     // Root Route
     method: ['GET','POST'],
-    path: '/home',
-    handler: handlers.home,
+    path: '/socketio',
+    handler: function(request, h){
+      return
+    },
     options: {
       state: {
         parse: true,

@@ -33,7 +33,7 @@ const init = async () => {
       plugin: require('./ioLib'),
       options: {
         io: {
-          path: '/',
+          path: '/socketio',
           serveClient: true,
           transports: ['websocket'],
           pingInterval: 10000,
