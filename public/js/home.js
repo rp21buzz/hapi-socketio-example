@@ -33,7 +33,9 @@ var app = new Vue({
     this.lastUpdated = d.toISOString();
     //
     this.socket =  io(window.location.origin, {
-      path: '/'
+      path: '/',
+      transports: ['websocket'],
+      reconnectionDelay: 1000
     });
     this.socket.connect();
   },

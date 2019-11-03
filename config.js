@@ -4,7 +4,7 @@ exports.local = {
   "server":{
     "protocol": "http",
     "port" : 3000,
-    "host" : "localhost"
+    "host" : "192.168.0.100"
   },
   "database": {
     "user": "",

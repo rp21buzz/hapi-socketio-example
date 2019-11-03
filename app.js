@@ -23,6 +23,7 @@ const init = async () => {
 
   // setup hapi default logging
   server.events.on('log', (event, tags) => {
+    console.log(event)
     console.log(`${(new Date(event.timestamp)).toISOString()}:::${event.tags.join(':::')}:::${event.data ? event.data : 'unknown'}`);
   });
 
@@ -33,8 +34,10 @@ const init = async () => {
       options: {
         io: {
           path: '/',
-          // serveClient: true,
-          transports: ['websocket']
+          serveClient: true,
+          transports: ['websocket'],
+          pingInterval: 10000,
+          pingTimeout: 5000
         }
       }
     },{

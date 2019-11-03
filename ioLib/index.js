@@ -18,14 +18,8 @@ module.exports = {
         const ioServer = new SocketIo(server.listner, ioOptions);
 
         // attach events Listners & Handlers defined in ioLib
-        // const ioUtilities = require('./utilities');
-        // ioUtilities.attachEvents(server, server.plugins.ioLib.io);
-
-        ioServer.on('connection',function(socket){
-          console.log(['websocket','success'], "client connected");
-          console.log(['websocket','success'], socket.stringify());
-          socket.emit('Oh hii!');
-        });
+        const ioUtilities = require('./utilities');
+        ioUtilities.attachEvents(server, ioServer);
 
         // expose the socket io
         server.expose('ioServer', ioServer);
