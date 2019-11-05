@@ -35,7 +35,7 @@ const init = async () => {
         io: {
           path: '/socketio',
           serveClient: true,
-          transports: ['websocket'],
+          transports: ['websocket', 'polling'],
           pingInterval: 10000,
           pingTimeout: 5000
         }

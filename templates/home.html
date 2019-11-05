@@ -62,7 +62,7 @@
     </div>
     <!--  -->
     <div class="row">
-      <div class="col">
+      <div class="col-4">
         <div class="card" v-if="! isUserLoggedIn">
           <div class="card-body">
             <h5 class="card-title">Sign-up</h5>
@@ -169,27 +169,29 @@
           </div>
         </div>
       </div>
-      <div class="col">
+      <div class="col-8">
         <div class="container">
           <div class="card" v-if="isUserLoggedIn">
             <div class="card-header">
-              <p>
+              <ul id="newNotificationsNav" class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link" v-bind:class="{ active: activeNotifyDiv=='new' }" href="#" v-on:click="activeNotifyDiv='new'">
+                    New&nbsp;&nbsp;<span class="badge badge-light"><i class="fas fa-bell"></i>&nbsp;\{{newNotifications.length}}</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" v-bind:class="{ active: activeNotifyDiv=='stale' }" href="#" v-on:click="activeNotifyDiv='stale'">Stale</a>
+                </li>
+              </ul>
+              <p class="card-text py-3">
                 <button type="button" class="btn btn-sm btn-secondary" v-on:click="refreshNotificationsDisplay">
                   <i class="fas fa-recycle"></i>
                 </button>
-                &nbsp; <- Click Me to refresh notifications below &nbsp;&nbsp;
-                <button type="button" class="btn btn-primary float-right">
-                  <i class="fas fa-bell"></i> <span class="badge badge-light">\{{newNotifications.length}}</span>
-                  <span class="sr-only">unread messages</span>
-                </button>
+              <small class="text-muted">&nbsp;&nbsp; < Click Me to refresh notifications below &nbsp;&nbsp;</small>
+                <small class="text-muted float-right">Last Notification Recieved @ {{getLastUpdated}}</small>
               </p>
-              <p class="card-text text-right"><small class="text-muted">Last Notification Recieved @ {{getLastUpdated}}</small></p>
             </div>
             <div class="">
-              <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-secondary" v-on:click="activeNotifyDiv='new'">New</button>
-                <button type="button" class="btn btn-secondary" v-on:click="activeNotifyDiv='stale'">Stale</button>
-              </div>
               <div id="newNotifications" class="card-body" style="height:500px;overflow-y:scroll" v-if="activeNotifyDiv=='new'">
                 <!--  -->
                 <div aria-live="polite" aria-atomic="true" style="position: relative; z-index:10000000;">
