@@ -185,12 +185,11 @@
                   <!-- v-if="!(publicBoardLock || publicBoardRemoteLock)"> -->
                   Save &nbsp;&nbsp; <i class="fas fa-save"></i>
                 </button>
-                <br><small>Any changes to the textarea content will reflect accross all client sessions</small>
               </h5>
               <form id="public-board" v-on:submit.prevent="onSubmit">
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Example textarea</label>
                   <textarea class="form-control" id="public-board-msg" rows="3" v-model="publicBoard"></textarea>
+                  <label for="exampleFormControlTextarea1"><br><small>Any changes to the textarea content will reflect accross all client sessions</small></label>
                 </div>
               </form>
             </div>
