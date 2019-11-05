@@ -98,7 +98,6 @@ var app = new Vue({
       //
       this.socket.on('users', (users) => {
         if(users){
-          console.log(users);
           this.users = users;
         }
       });
@@ -122,16 +121,22 @@ var app = new Vue({
     broadcastNotify: function() {
       if(this.socket){
         let form_data = JSON.stringify( $('#form-broadcastNotify').serializeArray() );
-        console.log(form_data);
         form_data['sender'] = this.username;
         this.socket.emit('pushNotify-all', form_data);
+      }else{
+        app.addToast('pgNotifications','error', 'Error connecting to server');
       }
+      $('#broadcastMsgModal').modal('toggle');
     },
     pushNotify: function() {
-      let form_data = JSON.stringify( $('#form-pushNotify').serializeArray() );
-      console.log(form_data);
-      form_data['sender'] = this.username;
-      this.socket.emit('pushNotify-user', form_data);
+      if(this.socket){
+        let form_data = JSON.stringify( $('#form-pushNotify').serializeArray() );
+        form_data['sender'] = this.username;
+        this.socket.emit('pushNotify-user', form_data);
+      }else{
+        app.addToast('pgNotifications','error', 'Error connecting to server');
+      }
+      $('#pushMsgModal').modal('toggle');
     },
   }
 });
