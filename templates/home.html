@@ -81,97 +81,120 @@
             </p>
           </div>
         </div>
-        <div class="card" v-if="isUserLoggedIn">
-          <div class="row no-gutters">
-            <div class="col-md-4">
-              <img src="/images/profile_img.png" class="card-img" alt="...">
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title">HI <strong><i>\{{username}}</i></strong></h5>
-                <p class="card-text">
-                  This is a POC application to demonstrate the Push notifications service using socket.io + redis + postgres.<br>
-                  The notification service has been developed in a plugin style to be able to embed into cross-framework nodejs applications,
-                  atleast that's the idea as it's yet to be put to test in this regard.
-                </p>
+        <template  v-if="isUserLoggedIn">          
+          <div class="card">
+            <div class="row no-gutters">
+              <div class="col-md-4">
+                <img src="/images/profile_img.png" class="card-img" alt="...">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">HI <strong><i>\{{username}}</i></strong></h5>
+                  <p class="card-text">
+                    This is a POC application to demonstrate the Push notifications service using socket.io + redis + postgres.<br>
+                    The notification service has been developed in a plugin style to be able to embed into cross-framework nodejs applications,
+                    atleast that's the idea as it's yet to be put to test in this regard.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col mx-3">
-              <div class="card-text my-2">
-                To Broadcast a notification to EveryBody Connected &nbsp;&nbsp;
-                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#broadcastMsgModal">Broadcast</button>
-                <!--  -->
-                <div id="broadcastMsgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="broadcastMsgModalLabel" aria-hidden="true" style="z-index:10000001;">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">Broadcast a Notification to Everybody</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
+            <!--  -->
+            <div class="row">
+              <div class="col mx-3">
+                <div class="card-text my-2">
+                  To Broadcast a notification to EveryBody Connected &nbsp;&nbsp;<i class="fas fa-hand-point-right"></i>
+                  <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#broadcastMsgModal">Broadcast</button>
+                  <!--  -->
+                  <div id="broadcastMsgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="broadcastMsgModalLabel" aria-hidden="true" style="z-index:10000001;">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Broadcast a Notification to Everybody</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form id="form-broadcastNotify" action="#" class="form my-2" v-on:submit.prevent="onSubmit">
+                            <div class="form-group">
+                              <input class="form-control mr-sm-2" type="text" name="push-msg" aria-label="push-msg" placeholder="Type a Message to push to a user">
+                            </div>
+                          </form>
+                          <button class="btn btn-secondary my-2 my-sm-0 float-right" v-on:click="broadcastNotify"><i class="fas fa-arrow-right"></i></button>
+                        </div>
+                        <div class="modal-footer">
+                          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        </div>
                       </div>
-                      <div class="modal-body">
-                        <form id="form-broadcastNotify" action="#" class="form my-2" v-on:submit.prevent="onSubmit">
-                          <div class="form-group">
-                            <input class="form-control mr-sm-2" type="text" name="push-msg" aria-label="push-msg" placeholder="Type a Message to push to a user">
-                          </div>
-                        </form>
-                        <button class="btn btn-secondary my-2 my-sm-0 float-right" v-on:click="broadcastNotify"><i class="fas fa-arrow-right"></i></button>
-                      </div>
-                      <div class="modal-footer">
-                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
+              <div class="w-100"></div>
+              <!--  -->
+              <div class="col mx-3">
+                <div class="card-text my-2">
+                  To Push a notification to a specific user &nbsp;&nbsp;<i class="fas fa-hand-point-right"></i>
+                  <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#pushMsgModal">Push</button>
+                  <!--  -->
+                  <div id="pushMsgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pushMsgModalLabel" aria-hidden="true" style="z-index:10000001;">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Push Notification to a user</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form action="#" class="form my-2" id="form-pushNotify" v-on:submit.prevent="onSubmit">
+                            <div class="form-group">
+                              <label for="exampleFormControlSelect1">Select a user</label>
+                              <select class="form-control" id="user-select" name="user" multiple style="max-height:100px;overflow-y:scroll;">
+                                <option value="" selected v-if="users == []">No users</option>
+                                <template v-for="usr in Object.keys(users)">
+                                  <option v-bind:value="usr" v-if="usr != username">\{{usr}}</option>
+                                </template>
+                              </select>
+                            </div>
+                            <div class="form-group">
+                              <input class="form-control mr-sm-2" type="text" name="msg" aria-label="push-msg" placeholder="Type a Message to push to a user">
+                            </div>
+                          </form>
+                          <button class="btn btn-secondary float-right" type="" v-on:click="pushNotify">Push &nbsp;&nbsp; <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                        <div class="modal-footer">
+                          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <!--  -->
-            <div class="w-100"></div>
-            <!--  -->
-            <div class="col mx-3">
-              <div class="card-text my-2">
-                To Push a notification to a specific user &nbsp;&nbsp;
-                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#pushMsgModal">Push</button>
-                <!--  -->
-                <div id="pushMsgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pushMsgModalLabel" aria-hidden="true" style="z-index:10000001;">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">Push Notification to a user</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <form action="#" class="form my-2" id="form-pushNotify" v-on:submit.prevent="onSubmit">
-                          <div class="form-group">
-                            <label for="exampleFormControlSelect1">Select a user</label>
-                            <select class="form-control" id="user-select" name="user" multiple style="max-height:100px;overflow-y:scroll;">
-                              <option value="" selected v-if="users == []">No users</option>
-                              <template v-for="usr in Object.keys(users)">
-                                <option v-bind:value="usr" v-if="usr != username">\{{usr}}</option>
-                              </template>
-                            </select>
-                          </div>
-                          <div class="form-group">
-                            <input class="form-control mr-sm-2" type="text" name="msg" aria-label="push-msg" placeholder="Type a Message to push to a user">
-                          </div>
-                        </form>
-                        <button class="btn btn-secondary float-right" type="" v-on:click="pushNotify">Push &nbsp;&nbsp; <i class="fas fa-arrow-right"></i></button>
-                      </div>
-                      <div class="modal-footer">
-                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-                      </div>
-                    </div>
-                  </div>
+          </div>
+          <!--  -->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <strong><i>Public Board</i></strong>
+                <!-- <button class="btn btn-secondary float-right" type="" v-on:click="publicBoard('edit')"> v-if="publicBoardLock || publicBoardRemoteLock">
+                Edit &nbsp;&nbsp; <i class="fas fa-edit"></i></button> -->
+                <button class="btn btn-secondary float-right" type="" v-on:click="publicBoardUpdate">
+                  <!-- v-if="!(publicBoardLock || publicBoardRemoteLock)"> -->
+                  Save &nbsp;&nbsp; <i class="fas fa-save"></i>
+                </button>
+              </h5>
+              <form id="public-board" v-on:submit.prevent="onSubmit">
+                <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Example textarea</label>
+                  <textarea class="form-control" id="public-board-msg" rows="3" v-model="publicBoard"></textarea>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
-        </div>
+        </template>
       </div>
       <div class="col-8">
         <div class="card" v-if="isUserLoggedIn">
@@ -208,29 +231,29 @@
                     <strong class="mr-auto">\{{note.cfg.title}}</strong> &nbsp;&nbsp;
                     <small>\{{note.dt}}</small>
                     <!-- <button type="button" class="ml-2 mb-1 close" aria-label="Close" v-on:click="delToast(note.container, index)">
-                      <span aria-hidden="true">&times;</span>
-                    </button> -->
-                  </div>
-                  <div :class="'toast-body'+ note.cfg.cls">
-                    \{{note.msg}}
-                  </div>
+                    <span aria-hidden="true">&times;</span>
+                  </button> -->
+                </div>
+                <div :class="'toast-body'+ note.cfg.cls">
+                  \{{note.msg}}
                 </div>
               </div>
             </div>
           </div>
-          <!--  -->
-          <div id="staleNotifications" class="card-body" style="height:500px;overflow-y:scroll" v-if="activeNotifyDiv=='stale'">
-            <ul class="list-group">
-              <li :class="'list-group-item ' + note.cfg.cls" v-for="note in staleNotifications">
-                \{{note.msg}}
-                <small class="float-right text-muted">\{{note.dt}}</small>
-              </li>
-            </ul>
-          </div>
+        </div>
+        <!--  -->
+        <div id="staleNotifications" class="card-body" style="height:500px;overflow-y:scroll" v-if="activeNotifyDiv=='stale'">
+          <ul class="list-group">
+            <li :class="'list-group-item ' + note.cfg.cls" v-for="note in staleNotifications">
+              \{{note.msg}}
+              <small class="float-right text-muted">\{{note.dt}}</small>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>
 <!--  -->
 </div>  <!-- home - Vue App -->

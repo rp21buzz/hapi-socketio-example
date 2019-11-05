@@ -2,6 +2,9 @@ var app = new Vue({
   el: '#home',
   data: {
     socket: null,
+    publicBoard: "",
+    publicBoardLock: true,
+    publicBoardRemoteLock: false,
     lastUpdated: '',
     username: '',
     users: {},
@@ -75,7 +78,7 @@ var app = new Vue({
       console.log(this.socket);
       //
       this.socket.on('connect', () => {
-        app.addToast('pgNotifications','success', "Socket connection handshake successful");
+        this.addToast('pgNotifications','success', "Socket connection handshake successful");
         this.socket.emit('subscribe',this.username);
       });
       //
@@ -92,9 +95,20 @@ var app = new Vue({
       });
       //
       this.socket.on('pushNotify-user', (data) => {
-        console.log('notifications','primary', data.msg);
         this.addToast('notifications','primary', data.msg);
       });
+      //
+      this.socket.on('publicBoardUpdate', (boardContent) => {
+        this.publicBoard = boardContent;
+      });
+      //
+      // this.socket.on('publicBoardRemoteLock', (locakstate) => {
+      //   if(lockstate == "true"){
+      //     this.publicBoardRemoteLock = true;
+      //   }else(lockstate == "false"){
+      //     this.publicBoardRemoteLock = false;
+      //   }
+      // });
       //
       this.socket.on('users', (users) => {
         if(users){
@@ -138,5 +152,8 @@ var app = new Vue({
       }
       $('#pushMsgModal').modal('toggle');
     },
+    publicBoardUpdate: function() {
+      this.socket.emit('publicBoardUpdate', this.publicBoard);
+    }
   }
 });

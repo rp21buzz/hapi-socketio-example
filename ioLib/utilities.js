@@ -4,11 +4,13 @@ const users = {};
 const rooms = {
   'public': []
 };
+let publicBoard = "Hello How are you ?"
 
 exports.attachEvents = (server, ioServer) => {
   ioServer.on('connection',function(socket){
     server.log(['websocket','success'], "client connected");
-    server.log(['websocket','success'], socket);
+    ioServer.to(`${socket.id}`).emit('publicBoardUpdate', publicBoard);
+    // server.log(['websocket','success'], socket);
     //
     socket.join('public', () => {
       rooms.public.push(socket.id);
@@ -73,10 +75,21 @@ exports.attachEvents = (server, ioServer) => {
       for (let room of user_rooms) {
         if(Object.keys(rooms).indexOf(room) > -1){
           server.log(['websocket','pushNotify-user','success'], JSON.stringify(room));
-          socket.to(room).emit('pushNotify-user', { msg: msg })
+          socket.to(room).emit('pushNotify-user', { msg: msg });
         }
       }
     });
     //
+    socket.on('publicBoardRemoteLock', (lockstate) => {
+      server.log(['websocket','pushNotify-user','success'], JSON.stringify(user_rooms));
+      socket.broadcast.emit('publicBoardRemoteLock', lockstate)
+    });
+    //
+    socket.on('publicBoardUpdate', (content) => {
+      server.log(['websocket','publicBoardUpdate','success'], content);
+      publicBoard = content;
+      server.log(['websocket','publicBoardUpdate','success'], publicBoard);
+      socket.broadcast.emit('publicBoardUpdate', publicBoard);
+    });
   });
 }
