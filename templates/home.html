@@ -69,7 +69,7 @@
             <h6 class="card-subtitle mb-2 text-muted">Please enter a user name</h6>
             <div class="card-text">
               <div class="form-inline my-2">
-                <form id="form-signup" class="" action="#" method="post">
+                <form id="form-signup" class="" action="#" method="post" v-on:submit.prevent="onSubmit">
                   <input class="form-control mr-sm-2" type="text" name="username" aria-label="username" placeholder="Enter username">
                 </form>
                 <button class="btn btn-secondary my-2 my-sm-0" v-on:click="userSignup"><i class="fas fa-arrow-alt-circle-right"></i></button>
@@ -81,7 +81,7 @@
             </p>
           </div>
         </div>
-        <template  v-if="isUserLoggedIn">          
+        <template  v-if="isUserLoggedIn">
           <div class="card">
             <div class="row no-gutters">
               <div class="col-md-4">
