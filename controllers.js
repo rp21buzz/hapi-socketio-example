@@ -13,7 +13,7 @@ exports.signup = ( request, h ) => {
   const resp = {
     success:  true,
     username: username,
-    msg:  "All Went well"
+    msg:  "Sign-In Successful"
   }
   return resp
 }

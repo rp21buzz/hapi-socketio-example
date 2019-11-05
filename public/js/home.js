@@ -4,10 +4,10 @@ var app = new Vue({
     socket: null,
     lastUpdated: '',
     username: '',
+    users: {},
     activeNotifyDiv: 'new',
-    newNotifications: [],
+    notifications: [],
     staleNotifications: [],
-    displayNotifications: [],
     pgNotifications:[],
     toastConfig: {
       error: {
@@ -47,26 +47,22 @@ var app = new Vue({
     }
   },
   methods: {
-    addToast: function(toastContainer, toastType, errMsg ) {
+    addToast: function(toastContainer, toastType, msg ) {
       let d = new Date();
-      this.pgNotifications.push({
+      this[toastContainer].push({
         container: toastContainer,
         cfg: this.toastConfig[toastType],
-        msg: errMsg,
+        msg: msg,
         dt: d.toISOString()
       });
     },
     delToast: function(toastContainer, index) {
       this[toastContainer].splice(index,1);
     },
-    refreshNotificationsDisplay: function() {
-      while (this.displayNotifications) {
-        let note = this.displayNotifications.shift();
+    clearNotifications: function() {
+      while (this.notifications.length != 0) {
+        let note = this.notifications.shift();
         this.staleNotifications.push(note);
-      }
-      while (this.newNotifications) {
-        let note = this.newNotifications.shift();
-        this.displayNotifications.push(note);
       }
       // this.activeNotifyDiv = 'new';
     },
@@ -76,27 +72,35 @@ var app = new Vue({
         transports: ['websocket', 'polling'],
         reconnectionDelay: 1000
       });
+      console.log(this.socket);
       //
-      this.socket.on('broadcast', function(msg){
-        let d = new Date();
-        this.newNotifications.push({
-          container: 'newNotifications',
-          title: 'Broadcast Notification',
-          cfg: this.toastConfig['info'],
-          msg: msg,
-          dt: d.toISOString()
-        });
+      this.socket.on('connect', () => {
+        app.addToast('pgNotifications','success', "Socket connection handshake successful");
+        this.socket.emit('subscribe',this.username);
       });
       //
-      this.socket.on('push', function(msg){
-        let d = new Date();
-        this.newNotifications.push({
-          container: 'newNotifications',
-          title: 'Targeted Notification',
-          cfg: this.toastConfig['primary'],
-          msg: msg,
-          dt: d.toISOString()
-        });
+      this.socket.on('disconnect', (reason) => {
+        if(reason === "stale-connection"){
+          this.socket.connect();
+        }else{
+          this.addToast('pgNotifications','error', "Socket disconnected");
+        }
+      });
+      //
+      this.socket.on('pushNotify-all', (data) => {
+        this.addToast('notifications','info', data.msg);
+      });
+      //
+      this.socket.on('pushNotify-user', (data) => {
+        console.log('notifications','primary', data.msg);
+        this.addToast('notifications','primary', data.msg);
+      });
+      //
+      this.socket.on('users', (users) => {
+        if(users){
+          console.log(users);
+          this.users = users;
+        }
       });
     },
     userSignup: function() {
@@ -105,6 +109,7 @@ var app = new Vue({
       .done( (resp) => {
         if(resp.success){
           this.username = resp.username;
+          this.socket.emit('subscribe',this.username);
           app.addToast('pgNotifications','success', resp.msg);
         }else{
           app.addToast('pgNotifications','error', resp.msg);
@@ -116,13 +121,17 @@ var app = new Vue({
     },
     broadcastNotify: function() {
       if(this.socket){
-        let form_data = $('#broadcastNotify').serializeObject();
+        let form_data = JSON.stringify( $('#form-broadcastNotify').serializeArray() );
+        console.log(form_data);
         form_data['sender'] = this.username;
-        this.socket.emit('broadcast', form_data);
+        this.socket.emit('pushNotify-all', form_data);
       }
     },
     pushNotify: function() {
-      let form_data = $('#broadcastNotify').serializeObject();
+      let form_data = JSON.stringify( $('#form-pushNotify').serializeArray() );
+      console.log(form_data);
+      form_data['sender'] = this.username;
+      this.socket.emit('pushNotify-user', form_data);
     },
   }
 });
