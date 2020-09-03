@@ -10,7 +10,7 @@
   "author": "rakesh.palaparthi",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^18.4.0",
+    "@hapi/hapi": "^19.1.1",
     "@hapi/hoek": "^8.3.2",
     "@hapi/vision": "^5.5.4",
     "handlebars": "^4.5.0",
